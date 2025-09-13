@@ -1,7 +1,3 @@
-# ----------------------------
-# root.hcl (simple & strict)
-# ----------------------------
-
 locals {
   # These files MUST exist and have the keys shown below.
   region_vars       = read_terragrunt_config(find_in_parent_folders("region.hcl"))
@@ -66,7 +62,7 @@ generate "provider_hcloud" {
 
 # Expose everything downstream (including the labels map)
 inputs = merge(
-  local.region_vars.locals,    # Isso inclui: region = "ash", zone = "us-west"
+  local.region_vars.locals,
   local.service_vars.locals,
   local.provider_vars.locals,
   local.environment_vars.locals,

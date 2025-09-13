@@ -1,5 +1,6 @@
-include {
+include "root"{
   path = find_in_parent_folders("root.hcl")
+  expose = true
 }
 
 dependency "network" {
@@ -7,20 +8,25 @@ dependency "network" {
 }
 
 terraform {
-  source = "../../../../../modules/hetzner/firewall"
+  source = "../../../../../../modules/hetzner/firewall"
 }
 
 dependencies {
   paths = ["../00-network"]
 }
 
+locals {
+  labels = merge(
+    include.root.inputs.labels,
+    {
+      type = "firewall"
+    }
+  )
+}
+
 inputs = {
-  firewall_name = "k3s-firewall"
-  labels = {
-    Name        = "k3s-firewall"
-    Environment = "prod"
-    ManagedBy   = "terragrunt"
-  }
+  firewall_name = "${include.root.inputs.service_name}-firewall"
+  labels        = local.labels
 
   firewall_rules = [
     {

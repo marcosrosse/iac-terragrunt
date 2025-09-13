@@ -9,9 +9,9 @@ terraform {
 }
 
 locals {
-  network_name     = "k3s-network"
-  network_ip_range = "10.0.0.0/16"
-  subnet_ip_range  = "10.0.0.0/24"
+  network_name     = "${include.root.inputs.service_name}-network"
+  network_ip_range = include.root.inputs.network_ip_range
+  subnet_ip_range  = include.root.inputs.subnet_ip_range
   
   network_zone     = include.root.inputs.zone
   

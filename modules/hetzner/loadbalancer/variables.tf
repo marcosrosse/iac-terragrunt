@@ -11,13 +11,13 @@ variable "network_id" {
 variable "loadbalancer_ip" {
   description = "Load balancer IP in the private network"
   type        = string
-  default     = "10.0.1.100"
+  default     = null
 }
 
 variable "location" {
   description = "Load balancer location"
   type        = string
-  default     = "fsn1"
+  default     = null
 }
 
 variable "server_ids" {
@@ -40,13 +40,11 @@ variable "protocol" {
 variable "listen_port" {
   description = "Port that the load balancer will listen on"
   type        = number
-  default     = 6443
 }
 
 variable "target_port" {
   description = "Target servers port"
   type        = number
-  default     = 6443
 }
 
 variable "labels" {

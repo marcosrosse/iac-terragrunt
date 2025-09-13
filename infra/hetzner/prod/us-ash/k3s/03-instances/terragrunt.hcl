@@ -1,5 +1,6 @@
-include {
+include "root" {
   path = find_in_parent_folders("root.hcl")
+  expose = true
 }
 
 dependency "network" {
@@ -23,35 +24,35 @@ dependencies {
 }
 
 terraform {
-  source = "../../../../../modules/hetzner/instances"
+  source = "../../../../../../modules/hetzner/instances"
+}
+
+locals {
+  labels = merge(
+    include.root.inputs.labels,
+    {
+      type = "instance"
+    }
+  )
 }
 
 inputs = {
-  # Instance counts
-  control_plane_count = 1
-  worker_count       = 1
+  control_plane_count       = 1
+  worker_count              = 0
 
-  # Instance types
-  control_plane_type = "cax11"
-  worker_type       = "cax11"
+  control_plane_type        = "ccx13"
+  worker_type               = "ccx23"
 
-  # Common configurations
-  instance_prefix         = "k3s"
-  image                  = "ubuntu-22.04"
-  location              = "fsn1"  # Falkenstein, Germany
-  user_data_template_path = "${get_repo_root()}/tools/cloud-init/cloud-init.yaml"
-  network_name          = dependency.network.outputs.network_name
-  ssh_key_name         = dependency.ssh_key.outputs.ssh_key_name
+  image                     = "ubuntu-22.04"
+  location                  = include.root.inputs.region
+  instance_prefix           = include.root.inputs.service_name
+  ssh_key_name              = "${include.root.inputs.service_name}-key"
+  network_name              = "${include.root.inputs.service_name}-network"
+  user_data_template_path   = "${get_repo_root()}/tools/cloud-init/cloud-init.yaml"
 
-  labels = {
-    Name        = "k3s"
-    Environment = "prod"
-    ManagedBy   = "terragrunt"
-  }
+  labels                    = local.labels
 
-  # Firewall
-  firewall_name = dependency.firewall.outputs.firewall_name
+  firewall_name             = "${include.root.inputs.service_name}-firewall"
 
-  # Inventory file path
-  inventory_file_path = "${get_terragrunt_dir()}/inventory.yaml"
+  inventory_file_path       = "${get_terragrunt_dir()}/inventory.yaml"
 }

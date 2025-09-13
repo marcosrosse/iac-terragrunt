@@ -6,9 +6,9 @@ resource "hcloud_load_balancer" "k3s" {
 }
 
 resource "hcloud_load_balancer_network" "k3s" {
-  load_balancer_id = hcloud_load_balancer.k3s.id
-  network_id       = var.network_id
-  ip              = var.loadbalancer_ip
+  load_balancer_id  = hcloud_load_balancer.k3s.id
+  network_id        = var.network_id
+  ip                = var.loadbalancer_ip
 }
 
 resource "hcloud_load_balancer_service" "k3s" {

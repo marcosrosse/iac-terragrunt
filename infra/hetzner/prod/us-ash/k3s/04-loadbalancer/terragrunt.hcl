@@ -1,5 +1,6 @@
-include {
+include "root" {
   path = find_in_parent_folders("root.hcl")
+  expose = true
 }
 
 dependency "network" {
@@ -11,7 +12,7 @@ dependency "instances" {
 }
 
 terraform {
-  source = "../../../../../modules/hetzner/loadbalancer"
+  source = "../../../../../../modules/hetzner/loadbalancer"
 }
 
 dependencies {
@@ -21,22 +22,27 @@ dependencies {
   ]
 }
 
+locals {
+  labels = merge(
+    include.root.inputs.labels,
+    {
+      type            = "lb"
+    }
+  )
+}
+
 inputs = {
-  name = "k3s-loadbalancer"
-  location = "fsn1"
+  name                = "${include.root.inputs.service_name}-lb"
+  location            = include.root.inputs.region
 
-  network_id = dependency.network.outputs.network_id
-  loadbalancer_ip = "10.0.1.100"
-  server_ids = dependency.instances.outputs.control_plane_server_ids
+  network_id          = dependency.network.outputs.network_id
+  loadbalancer_ip     = include.root.inputs.loadbalancer_ip
+  server_ids          = dependency.instances.outputs.control_plane_server_ids
 
 
-  protocol = "http"
-  listen_port = 80
-  target_port = 80
+  protocol            = "tcp"
+  listen_port         = 6443
+  target_port         = 6443
 
-  labels = {
-    Name = "k3s-loadbalancer"
-    Environment = "prod"
-    ManagedBy = "terragrunt"
-  }
+  labels              = local.labels
 }
