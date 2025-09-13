@@ -1,6 +1,6 @@
 # IaC - Terragrunt
 
-This repository contains infrastructure as code (IaC) for Kubernetes clusters hosted on the Hetzner Cloud. We use Terraform with Terragrunt to manage our infrastructure in a modular and reusable way.
+This repository contains a collection of infrastructure as code.
 
 ## 🏗️ Project Structure
 
