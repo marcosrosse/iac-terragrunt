@@ -1,14 +1,14 @@
 output "ssh_key_id" {
-  description = "ID da chave SSH criada"
-  value       = hcloud_ssh_key.k3s.id
+  description = "SSH Key ID"
+  value       = hcloud_ssh_key.generic.id
 }
 
 output "ssh_key_name" {
-  description = "Nome da chave SSH"
-  value       = hcloud_ssh_key.k3s.name
+  description = "SSH Key name"
+  value       = hcloud_ssh_key.generic.name
 }
 
 output "ssh_key_fingerprint" {
-  description = "Fingerprint da chave SSH"
-  value       = hcloud_ssh_key.k3s.fingerprint
+  description = "Fingerprint of the SSH Key"
+  value       = hcloud_ssh_key.generic.fingerprint
 }

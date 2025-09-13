@@ -4,7 +4,7 @@ resource "hcloud_network" "private_net" {
   labels   = var.labels
 }
 
-resource "hcloud_network_subnet" "k3s_subnet" {
+resource "hcloud_network_subnet" "generic_subnet" {
   type         = "cloud"
   network_id   = hcloud_network.private_net.id
   network_zone = var.network_zone

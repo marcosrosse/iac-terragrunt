@@ -1,10 +1,10 @@
 variable "firewall_name" {
-  description = "Nome do firewall"
+  description = "Firewall name"
   type        = string
 }
 
 variable "firewall_rules" {
-  description = "Lista de regras do firewall"
+  description = "Firewall rules"
   type = list(object({
     direction   = string
     protocol    = string
@@ -15,7 +15,7 @@ variable "firewall_rules" {
 }
 
 variable "labels" {
-  description = "Labels para o recurso"
+  description = "Labels to apply to the firewall"
   type        = map(string)
   default     = {}
 }

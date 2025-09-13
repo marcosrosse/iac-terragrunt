@@ -1,9 +1,9 @@
 output "firewall_id" {
-  description = "ID do firewall criado"
-  value       = hcloud_firewall.k3s_firewall.id
+  description = "Firewall ID"
+  value       = hcloud_firewall.generic_firewall.id
 }
 
 output "firewall_name" {
-  description = "Nome do firewall"
-  value       = hcloud_firewall.k3s_firewall.name
+  description = "Firewell name"
+  value       = hcloud_firewall.generic_firewall.name
 }

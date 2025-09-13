@@ -1,19 +1,19 @@
 output "network_id" {
-  description = "ID da rede criada"
+  description = "Network ID"
   value       = hcloud_network.private_net.id
 }
 
 output "network_name" {
-  description = "Nome da rede"
+  description = "Network name"
   value       = hcloud_network.private_net.name
 }
 
 output "network_ip_range" {
-  description = "Range de IP da rede"
+  description = "Network IP range"
   value       = hcloud_network.private_net.ip_range
 }
 
 output "subnet_id" {
-  description = "ID da subnet criada"
-  value       = hcloud_network_subnet.k3s_subnet.id
+  description = "Network Subnet ID"
+  value       = hcloud_network_subnet.generic_subnet.id
 }

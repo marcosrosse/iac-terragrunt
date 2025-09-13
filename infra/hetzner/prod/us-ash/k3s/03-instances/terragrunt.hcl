@@ -24,7 +24,7 @@ dependencies {
 }
 
 terraform {
-  source = "../../../../../../modules/hetzner/instances"
+  source = "../../../../../../modules/hetzner/k8s-instances"
 }
 
 locals {

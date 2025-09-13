@@ -1,15 +1,15 @@
 variable "ssh_key_name" {
-  description = "Nome da chave SSH"
+  description = "SSH Key name"
   type        = string
 }
 
 variable "public_key_path" {
-  description = "Caminho para o arquivo da chave pública SSH"
+  description = "SSH Public Key path"
   type        = string
 }
 
 variable "labels" {
-  description = "Labels para o recurso"
+  description = "Labels to apply to the SSH Key"
   type        = map(string)
   default     = {}
 }

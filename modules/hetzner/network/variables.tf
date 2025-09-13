@@ -1,28 +1,28 @@
 variable "network_name" {
-  description = "Nome da rede privada"
+  description = "Network name"
   type        = string
 }
 
 variable "network_ip_range" {
-  description = "Range de IP da rede privada"
+  description = "Network IP range"
   type        = string
-  default     = "10.0.0.0/8"
+  default     = null
 }
 
 variable "subnet_ip_range" {
-  description = "Range de IP da subnet"
+  description = "Subnet IP range"
   type        = string
-  default     = "10.0.1.0/24"
+  default     = null
 }
 
 variable "network_zone" {
-  description = "Zona da rede"
+  description = "Network zone"
   type        = string
-  default     = "eu-central"
+  default     = null
 }
 
 variable "labels" {
-  description = "Labels para o recurso"
+  description = "Labels to apply to the network"
   type        = map(string)
   default     = {}
 }

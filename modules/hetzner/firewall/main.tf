@@ -1,4 +1,4 @@
-resource "hcloud_firewall" "k3s_firewall" {
+resource "hcloud_firewall" "generic_firewall" {
   name = var.firewall_name
   labels = var.labels
 

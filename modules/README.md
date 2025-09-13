@@ -6,12 +6,12 @@ This directory contains reusable Terraform modules for infrastructure provisioni
 
 ```
 .
-└── hetzner/          # Hetzner Cloud specific modules
-    ├── firewall/     # Manages firewall rules and configurations
-    ├── instances/    # Handles VM instance provisioning
-    ├── loadbalancer/ # Configures load balancer settings
-    ├── network/      # Sets up private networks and subnets
-    └── ssh_key/      # Manages SSH key pairs
+└── hetzner/              # Hetzner Cloud specific modules
+    ├── firewall/         # Manages firewall rules and configurations
+    ├── k8s-instances/    # Handles VM instance provisioning
+    ├── loadbalancer/     # Configures load balancer settings
+    ├── network/          # Sets up private networks and subnets
+    └── ssh_key/          # Manages SSH key pairs
 ```
 
 ## Available Modules
@@ -63,7 +63,7 @@ Example usage in a Terragrunt configuration:
 
 ```hcl
 terraform {
-  source = "../../../../../modules/hetzner/<module_name>"
+  source = "../../../../../../modules/hetzner/<module_name>"
 }
 
 inputs = {
