@@ -1,154 +1,111 @@
-# IaC mrosse.it
+# IaC - Terragrunt
 
-This repository contains the Infrastructure as Code (IaC) for the Kubernetes cluster hosted on Hetzner Cloud. We use Terraform with Terragrunt to manage our infrastructure in a modular and reusable way.
+This repository contains infrastructure as code (IaC) for Kubernetes clusters hosted on the Hetzner Cloud. We use Terraform with Terragrunt to manage our infrastructure in a modular and reusable way.
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 .
-├── root.hcl                # Terragrunt global configurations
-├── infra/           # Environment-specific configurations
-│   └── hetzner/           # Hetzner Cloud environment
-│       ├── firewall/      # Firewall configuration
-│       ├── instances/     # Instances configuration (control-plane and workers)
-│       ├── loadbalancer/  # Load Balancer configuration
-│       ├── network/       # Network configuration
-│       └── ssh_key/       # SSH keys configuration
-└── modules/               # Reusable Terraform modules
-    └── hetzner/          # Hetzner-specific modules
-        ├── firewall/     # Firewall module
-        ├── instances/    # Instances module
-        ├── loadbalancer/ # Load Balancer module
-        ├── network/      # Network module
-        └── ssh_key/      # SSH Keys module
+├── root.hcl                                  # Global Terragrunt Settings
+├── infra/                                    # Environment-Specific Settings
+│   └── hetzner/                              # Hetzner Cloud Environment
+│       ├── provider.hcl                      # Provider Settings
+│       └── prod/                             # Production Environment
+│           ├── environment.hcl               # Environment Variables
+│           └── us-ash/                       # us-ash Region
+│               ├── region.hcl                # Region Variables
+│               └── k3s/                      # K3s Service
+│                   ├── service.hcl           # Service Variables
+│                   ├── 00-network/           # Network Configuration
+│                   ├── 01-firewall/          # Firewall Configuration
+│                   ├── 02-ssh-key/           # SSH Key Configuration
+│                   ├── 03-instances/         # Instance Configuration
+│                   └── 04-loadbalancer/      # Load Balancer Configuration
+└── modules/                                  # Reusable Terraform Modules
+    └── hetzner/                              # Hetzner-Specific Modules
+        ├── firewall/                         # Firewall Module
+        ├── k8s-instances/                    # Instance Module
+        ├── loadbalancer/                     # Load Balancer Module
+        ├── network/                          # Network Module
+        └── ssh_key/                          # SSH Key Module
 ```
 
-## Prerequisites
+## 🚀 Prerequisites
 
-- Terraform >= 1.0
-- Terragrunt >= 0.45
-- Hetzner Cloud account
-- Hetzner Cloud API token
+- **Terraform** >= 1.5.0
+- **Terragrunt** >= 0.45.0
+- **Hetzner Cloud Account**
+- **Hetzner API Token Cloud**
 
-## Configuration
+## ⚙️ Configuration
 
-1. Set up your environment variables:
-   ```bash
-   export HCLOUD_TOKEN=your-token-here
-   ```
+### 1. Environment Variables
 
-2. Review and update configurations in:
-   - `root.hcl` for global settings
-   - `infra/hetzner/terragrunt.hcl` for environment-specific settings
+```bash
+export HCLOUD_TOKEN=your-token-here
+```
 
-## Usage
+### 2. Hierarchical Configuration Structure
 
-To apply the infrastructure:
+The project uses a hierarchical structure where each level inherits and can override settings from higher levels:
 
-1. Navigate to the desired environment directory:
-   ```bash
-   cd infra/hetzner
-   ```
+```
+root.hcl (global)
+└── provider.hcl (provider-specific)
+    └── environment.hcl (environment-specific)
+        └── region.hcl (region-specific)
+            └── service.hcl (service-specific)
+```
 
-2. Apply all modules:
-   ```bash
-   terragrunt run-all apply
-   ```
+#### Example Settings:
 
-   Or apply specific modules:
-   ```bash
-   cd instances/
-   terragrunt apply
-   ```
+**root.hcl**: Global settings and default labels
+**provider.hcl**: Hetzner-specific configurations
+**environment.hcl**: `environment = "production"`
+**region.hcl**: `region = "ash"`, `zone = "us-west"`
+**service.hcl**: `service_name = "k3s"`, network config
 
-## Modules
+## 🛠️ How to Use
 
-### Firewall (`modules/hetzner/firewall`)
-- Manages cluster firewall rules
-- Configurable via `firewall_rules` in terragrunt.hcl
-- **Outputs**:
-  - `firewall_id`: ID of the created firewall
-  - `firewall_name`: Name of the firewall
+### Apply All Infrastructure
 
-### Instances (`modules/hetzner/instances`)
-- Manages K3s cluster instances
-- Supports multiple control-planes and workers
-- Configurable via variables in terragrunt.hcl
-- **Dependencies**:
-  - Network module (for network configuration)
-  - SSH Key module (for instance access)
-  - Firewall module (for security rules)
-- **Outputs**:
-  - `control_plane_ips`: Public IPs of control plane nodes
-  - `worker_ips`: Public IPs of worker nodes
-  - `control_plane_private_ips`: Private IPs of control plane nodes
-  - `worker_private_ips`: Private IPs of worker nodes
-  - `control_plane_server_ids`: IDs of control plane servers
-  - `inventory_path`: Path to generated Ansible inventory file
+```bash
+cd infra/hetzner/prod/us-ash/k3s
+terragrunt apply --all
+```
 
-### Network (`modules/hetzner/network`)
-- Configures private network for the cluster
-- Defines IP ranges and subnets
-- **Outputs**:
-  - `network_id`: ID of the created network
-  - `network_name`: Name of the network
-  - `network_ip_range`: IP range of the network
-  - `subnet_id`: ID of the created subnet
+### Apply Specific Modules
 
-### Load Balancer (`modules/hetzner/loadbalancer`)
-- Configures the cluster load balancer
-- Manages HTTP/HTTPS endpoints
+```bash
+cd infra/hetzner/prod/us-ash/k3s/00-network
+terragrunt apply
 
-### SSH Keys (`modules/hetzner/ssh_key`)
-- Manages SSH keys for instance access
-- **Outputs**:
-  - `ssh_key_id`: ID of the created SSH key
-  - `ssh_key_name`: Name of the SSH key
-  - `ssh_key_fingerprint`: Fingerprint of the SSH key
+cd ../03-instances
+terragrunt apply
+```
 
-## Variable Structure
+### Verify Changes
 
-- Global variables: Defined in `root.hcl`
-- Environment variables: Defined in `infra/hetzner/terragrunt.hcl`
-- Specific variables: Defined in each environment module
+```bash
+cd infra/hetzner/prod/us-ash/k3s
+terragrunt plan  --all
+```
 
-## Dependency Management and Mock Outputs
+## 🏷️ Labels
 
-Terragrunt uses dependencies to manage the order of resource creation and data sharing between modules. Mock outputs are used to handle dependency relationships during the planning phase, before actual resources exist.
+All resources are automatically tagged with default labels:
 
-### How Mock Outputs Work
+```hcl
+labels = {
+  environment = "production"
+  service     = "k3s"
+  region      = "ash"
+  zone        = "us-west"
+  managed_by  = "terragrunt"
+}
+```
 
-1. **Dependency Declaration**: In a module's `terragrunt.hcl`, dependencies are declared using the `dependency` block:
-   ```hcl
-   dependency "network" {
-     config_path = "../00-network"
-     mock_outputs = {
-       network_id = "mock-network-id"
-       network_name = "k3s-network"
-       network_ip_range = "10.0.0.0/16"
-       subnet_id = "mock-subnet-id"
-     }
-   }
-   ```
-
-2. **Mock Output Values**:
-   - Mock outputs provide temporary values during `plan` phase
-   - Must match the structure of actual module outputs
-   - Enable validation of configuration before resources exist
-   - Help break circular dependencies
-
-3. **When Mock Outputs are Used**:
-   - During initial deployment when dependent resources don't exist
-   - When running `terragrunt plan` on a fresh environment
-   - When validating configurations
-
-4. **Best Practices**:
-   - Always include all outputs that your module references
-   - Use realistic mock values that match expected formats
-   - Keep mock values consistent across related modules
-   - Document mock output requirements in module documentation
-
-## Maintenance
+## 🔧 Maintenance
 
 To update the infrastructure:
 
@@ -156,7 +113,7 @@ To update the infrastructure:
 2. Run `terragrunt plan` to check changes
 3. Run `terragrunt apply` to apply changes
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -164,6 +121,6 @@ To update the infrastructure:
 4. Push to the branch
 5. Open a Pull Request
 
-## License
+## 📄 License
 
 This project is under the MIT license.
