@@ -3,6 +3,5 @@ package_update: true
 package_upgrade: true
 packages:
   - wireguard
-  - nginx
 runcmd:
   - sysctl -w net.ipv4.ip_forward=1
