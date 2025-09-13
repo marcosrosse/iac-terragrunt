@@ -1,4 +1,6 @@
 locals{
-    region = "ash"
-    zone    = "us-west"
+    # ash: us-east
+    # hil: us-west
+    region  = "ash"
+    zone    = "us-east"
 }
